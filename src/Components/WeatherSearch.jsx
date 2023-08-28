@@ -15,6 +15,7 @@ function WeatherSearch() {
   const [data, setData] = useState(null);
   const [input, setInput] = useState("");
   const [backgroundVideo, setBackgroundVideo] = useState("");
+  const [status,setStatus]= useState(false)
 
   
   useEffect(() => {
@@ -30,8 +31,15 @@ function WeatherSearch() {
         const response = await fetch(
           `https://api.openweathermap.org/data/2.5/weather?q=${search}&appid=23e343b2ea6742cf142bfb32f060c148`
         );
+        console.log(response,'gg');
+        if (response.statusText!=='OK') {
+            setStatus(true)
+        }else{
+          setStatus(false)
+        }
    
-        if (componentMounted && response.status === 200) {
+        if (componentMounted && response.status === 200 ) {
+
           const weatherData = await response.json();
           setData(weatherData);
           setWeatherBackground(weatherData.weather[0].main);
@@ -166,6 +174,7 @@ if(search){
 
   const HandleSubmit = (e) =>{
     e.preventDefault();
+    
     setSearch(input)
    
 
@@ -212,6 +221,7 @@ if(search){
                       onChange={(e)=>setInput(e.target.value)}
                       required
                     />
+                    
                     <button
                       type="submit"
                       className="input-group-text"
@@ -220,6 +230,12 @@ if(search){
                       <i className="fa fa-search"></i>
                     </button>
                   </div>
+                  <div className="pb-19">
+                  <p></p>
+                  {status ? <p className="text-danger fw-bold">Not Found</p>:""}
+                  </div>
+
+                 
                 </form>
 
                 <div className="bg-dark bg-opacity-50 py-3 rounded">
